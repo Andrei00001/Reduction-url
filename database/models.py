@@ -1,6 +1,7 @@
 from connection_db import Base
 from sqlalchemy import Column, Integer, String
 
+
 class URL(Base):
     __tablename__ = 'url'
 
