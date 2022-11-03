@@ -13,42 +13,31 @@ app = FastAPI()
 templates = Jinja2Templates(directory='templates')
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    return templates.TemplateResponse('geniral.html', {'request': request})
-
-
-@app.post("/", response_class=HTMLResponse)
-async def root2(request: Request, data=Body()):
-    reduction_url = await get_reduction_url()
+@app.post("/")
+async def set_reduction_url(request: Request, data=Body()):
+    reduction_url = await create_reduction_url(str(request.url))
     async with async_session() as session:
         session.add(URL(
-            url=data.get('url'),
+            url=data.get('url') if isinstance(data, dict) else data,
             reduction_url=reduction_url
         ))
         await session.commit()
         await session.close()
-    return templates.TemplateResponse('geniral.html', {'request': request, 'url': reduction_url})
+    return reduction_url
 
 
 @app.get("/sh/{id}", response_class=HTMLResponse)
-async def root3(request: Request, id: str):
-    base_url = await get_local_url()
+async def get_reduction_url(request: Request, id:str):
     async with async_session() as session:
         query = select(
             URL
         ).where(
-            URL.reduction_url == base_url + f'sh/{id}'
+            URL.reduction_url == str(request.url)
         )
         obj = await session.execute(query)
         obj_url = obj.scalars().first().url
         return RedirectResponse(obj_url)
 
 
-async def get_reduction_url():
-    local = await get_local_url()
-    return f"{local}sh/{str(uuid4())[0:6]}"
-
-
-async def get_local_url():
-    return f"http://127.0.0.1:8000/"
+async def create_reduction_url(host):
+    return f"{host}sh/{str(uuid4())[0:6]}"
