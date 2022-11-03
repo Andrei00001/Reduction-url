@@ -19,7 +19,7 @@ class DBRepositories:
             password: str = os.getenv('PASSWORD'),
             host: str = "localhost",
             port: str = "5432",
-            database_name: str = "reduction_url",
+            database_name: str = os.getenv('DATABASENAME'),
             echo: bool = True,
             pool_size: int = 10,
             max_overflow: int = 100,
