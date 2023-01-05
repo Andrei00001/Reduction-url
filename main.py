@@ -23,6 +23,7 @@ async def set_reduction_url(request: Request, data=Body()):
         ))
         await session.commit()
         await session.close()
+    return reduction_url
 
 
 @app.get("/sh/{id}", response_class=HTMLResponse)
