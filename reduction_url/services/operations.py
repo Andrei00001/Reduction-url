@@ -8,13 +8,16 @@ from reduction_url.models import URL
 from reduction_url.schemas.auth import User
 
 
-class OptionalService:
+class OperationService:
     @staticmethod
-    async def create_reduction_url(host: str, user: Optional[User]):
+    async def create_reduction_url(host: str, prefix: str):
         query = select(URL).order_by(-URL.id).limit(1)
         async with Session() as session:
             obj = await session.execute(query)
             obj = obj.scalar()
             last_id = 0 if not obj else obj.id
-        prefix = 'anonymous' if user is None else user.prefix
         return f"{host}{prefix}/{b64encode(str(last_id).encode('ascii')).decode('utf-8')}"
+
+    @staticmethod
+    def get_prefix(anonymous_prefix: str, user: Optional[User]) -> str:
+        return anonymous_prefix if user is None else user.prefix
