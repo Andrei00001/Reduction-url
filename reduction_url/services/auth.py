@@ -45,7 +45,7 @@ class AuthService:
         return await cls._create_token(user)
 
     @classmethod
-    def get_current_user(cls, request: Request) -> Optional[User]:
+    async def get_current_user(cls, request: Request) -> Optional[User]:
         authorization: str = request.headers.get("Authorization")
         if not authorization:
             return None
