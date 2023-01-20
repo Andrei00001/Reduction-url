@@ -35,4 +35,5 @@ class DBRepositories:
             max_overflow=max_overflow,
             encoding=encoding,
             connect_args=connect_args
-        )
+        ),  f"{dialect}+{driver}://{username}:{password}@{host}:{port}/{database_name}"
+
