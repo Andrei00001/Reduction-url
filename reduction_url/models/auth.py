@@ -19,4 +19,4 @@ class User(Base):
     last_login = Column(DateTime, nullable=True)
     date_joined = Column(DateTime, nullable=True)
 
-    prefix: str = Column(String(length=12), unique=True, index=True, nullable=False)
+    prefix: str = Column(String(length=12), unique=True, index=True, nullable=True)
